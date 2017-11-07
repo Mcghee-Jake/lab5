@@ -40,25 +40,139 @@ def pyCopy(source, target, targetX, targetY):
 def makeCollage():
 
     canvas = makeEmptyPicture(3300, 2550)
-    pic1 = makePicture('C:\\Users\\Jake\\Desktop\\School\\CST 205\\lab5\\jaguar.jpg')
+    rows = 4
+    cols = 4
+    grid = makeGrid(canvas, rows, cols)
     
-    copyToTarget(pic1, canvas, getWidth(canvas)/2 - getWidth(pic1), getHeight(canvas)/2 - getHeight(pic1))
+    #paint photo 1
+    pic1 = makePicture('C:\\Users\\J.McGhee\\Documents\\Jake\\CST205\\lab5\\jaguar-wide-30858048.jpg')
+    pic1 = copyPictureToFitGrid(pic1, canvas, rows, cols, 200, 100)
+    #makeNegative(pic1)
+    copyToTarget(pic1, canvas, grid[0][0][0], grid[0][0][1])
     pic1 = mirror_horizontal(pic1)
-    copyToTarget(pic1, canvas, getWidth(canvas)/2, getHeight(canvas)/2 - getHeight(pic1))
+    copyToTarget(pic1, canvas, grid[0][3][0], grid[0][3][1])
     pic1 = mirror_vertical(pic1)
-    copyToTarget(pic1, canvas, getWidth(canvas)/2, getHeight(canvas)/2)
+    copyToTarget(pic1, canvas, grid[3][3][0], grid[3][3][1])
     pic1 = mirror_horizontal(pic1)
-    copyToTarget(pic1, canvas, getWidth(canvas)/2 - getWidth(pic1), getHeight(canvas)/2 - getHeight(pic1))
+    copyToTarget(pic1, canvas, grid[3][0][0], grid[3][0][1])
+    print("photo 1 successful")
     
-    writePictureTo(canvas,'C:\\Users\\Jake\\Desktop\\School\\CST 205\\lab5\\collage.jpg')
-    return(canvas)
+    #paint photo 2
+    pic2 = makePicture('C:\\Users\\J.McGhee\\Documents\\Jake\\CST205\\lab5\\jaguar-900-retina.jpg')
+    pic2 = copyPictureToFitGrid(pic2, canvas, rows, cols, 0, 100)
+    copyToTarget(pic2, canvas, grid[0][1][0], grid[0][1][1])
+    pic2 = mirror_horizontal(pic2)
+    copyToTarget(pic2, canvas, grid[0][2][0], grid[0][2][1])
+    print("photo 2 successful")
+    
+    #paint photo 3
+    pic3 = makePicture('C:\\Users\\J.McGhee\\Documents\\Jake\\CST205\\lab5\\national-animal-of-brazil.jpg')
+    pic3 = copyPictureToFitGrid(pic3, canvas, rows, cols, 400, 100)
+    pic3 = mirror_vertical(pic3)
+    copyToTarget(pic3, canvas, grid[3][2][0], grid[3][2][1])
+    pic3 = mirror_horizontal(pic3)
+    copyToTarget(pic3, canvas, grid[3][1][0], grid[3][1][1])
+    print("photo 3 successful")
+    
+    #paint photo 4
+    pic4 = makePicture('C:\\Users\\J.McGhee\\Documents\\Jake\\CST205\\lab5\\Panthera_onca_at_the_Toronto_Zoo_2.jpg')
+    pic4 = copyPictureToFitGrid(pic4, canvas, rows, cols, 0, 0)
+    copyToTarget(pic4, canvas, grid[1][3][0], grid[1][3][1])
+    pic4 = mirror_horizontal(pic4)
+    copyToTarget(pic4, canvas, grid[1][0][0], grid[1][0][1])
+    print("photo 4 successful")
+    
+    #paint photo 5
+    pic5 = makePicture('C:\\Users\\J.McGhee\\Documents\\Jake\\CST205\\lab5\\jaguar-06.jpg')
+    pic5 = copyPictureToFitGrid(pic5, canvas, rows, cols, 0, 500)
+    pic5 = mirror_vertical(pic5)
+    copyToTarget(pic5, canvas, grid[2][0][0], grid[2][0][1])
+    pic5 = mirror_horizontal(pic5)
+    copyToTarget(pic5, canvas, grid[2][3][0], grid[2][3][1])
+    print("photo 5 successful")
+    
+    #paint center photo
+    pic8 = makePicture('C:\\Users\\J.McGhee\\Documents\\Jake\\CST205\\lab5\\jaguar.jpg')
+    #pic8 = copyPictureToFitGrid(pic8, canvas, rows, cols, 0, 0)
+    pic8 = quadMirror_topLeft(pic8)
+    copyToTarget(pic8, canvas, getWidth(canvas)/2 - getWidth(pic8)/2, getHeight(canvas)/2 - getHeight(pic8)/2)
+    
+   
     
     
-def makeGrid(x_grid_size, y_grid_size):
-    pic = getPic()
-    for y in range (0, getHeight(pic), getHeight(pic) / y_griz_size):
-        for y in range (0, 
+     
+    
+    writePictureTo(canvas, 'C:\\Users\\J.McGhee\\Documents\\Jake\\CST205\\lab5\\collage.jpg')
+    # writePictureTo(canvas,'C:\\Users\\Jake\\Desktop\\School\\CST 205\\lab5\\collage.jpg')
+    
+def copyToTarget(source, target, targetX, targetY):
+    """ makes a copy of an image - same function as pyCopy except it does not show the result"""
+
+    for x in range (0, getWidth(source)):
+        for y in range (0, getHeight(source)):
+            color = getColor(getPixel(source, x, y))
+            setColor(getPixel(target, x+targetX, y+targetY), color)
+    return target  
+    
+def makeGrid(canvas, row, col):
+    """ creates a m x n list containing the [x,y] locations on the grid where pictures should be drawn """
+
+    grid = []
+    i = -1
+    for y in range (0, getHeight(canvas), getHeight(canvas) / col):
+        grid.append([])
+        i+=1
+        for x in range (0, getWidth(canvas), getWidth(canvas) / row):
+            grid[i].append([x,y])
+    return grid
+     
+def copyPictureToFitGrid(pic, canvas, row, col, beginX, beginY):
+    """ crops a picture so that it will fit on an m x n grid """
+    
+    # get size of the new picture
+    width = getWidth(canvas) / row
+    height = getHeight(canvas) / col
+    
+    #make sure picture is large enough to fit on the grid
+    if getWidth(pic) < width:
+        print("Error - image too small to fit on grid - %s" % pic) 
+        return
+    elif getHeight(pic) < height:
+        print("Error - image too small to fit on grid - %s" % pic)
+        return
+    
+    copy = makeEmptyPicture(width, height)
+    
+    # reduce size of the picture if it is significantly bigger than the grid size  
+    while getWidth(pic) > width*2 and getHeight(pic) > height*2:
+        pic = shrink(pic)
+    
+    # error check for out of bounds exception
+    if getWidth(pic) - beginX < width:
+         beginX = getWidth(pic) - width
+    if getHeight(pic) - beginY < height:
+         beginY = getHeight(pic) - height
         
+    # paint new picture
+    for x in range (0, width):
+        for y in range (0, height):
+            color = getColor(getPixel(pic, x+beginX, y+beginY))
+            setColor(getPixel(copy, x, y), color)
+    return copy
+    
+  
+    
+
+def shrink(pic):
+  width = getWidth(pic)
+  height = getHeight(pic)
+  canvas = makeEmptyPicture(width/2, height/2)
+  for x in range (0, width-1, 2):
+    for y in range (0, height-1, 2):
+      color = getColor(getPixel(pic, x, y))
+      setColor(getPixel(canvas, x/2, y/2), color)
+  return canvas        
+    
 
 def mirror_horizontal(pic):
     width = getWidth(pic)
@@ -100,12 +214,20 @@ def quadMirror_topLeft(pic):
             setColor(copy, color)  
             
     return(pic)
-    
-def copyToTarget(source, target, targetX, targetY):
-    """ makes a copy of an image - same function as pyCopy except it does not show the result"""
 
-    for x in range (0, getWidth(source)):
-        for y in range (0, getHeight(source)):
-            color = getColor(getPixel(source, x, y))
-            setColor(getPixel(target, x+targetX, y+targetY), color)
-    return target
+def makeNegative(pic):
+    """ Makes a negative copy of an image """
+
+    pixels = getPixels(pic)
+    for p in pixels:
+        r = getRed(p)
+        g = getGreen(p)
+        b = getBlue(p)
+        r = 255 - r
+        g = 255 - g
+        b = 255 - b
+        setRed(p, r)
+        setGreen(p, g)
+        setBlue(p, b)
+    return(pic)
+    
