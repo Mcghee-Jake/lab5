@@ -45,9 +45,9 @@ def makeCollage():
     grid = makeGrid(canvas, rows, cols)
     
     #paint photo 1
-    pic1 = makePicture('C:\\Users\\J.McGhee\\Documents\\Jake\\CST205\\lab5\\jaguar-wide-30858048.jpg')
-    pic1 = copyPictureToFitGrid(pic1, canvas, rows, cols, 200, 100)
-    #makeNegative(pic1)
+    pic1 = makePicture('C:\\Users\\J.McGhee\\Documents\\Jake\\CST205\\lab5\\animals_hero_jaguars.jpg')
+    pic1 = BnW(pic1)
+    pic1 = copyPictureToFitGrid(pic1, canvas, rows, cols, 1000, 350)
     copyToTarget(pic1, canvas, grid[0][0][0], grid[0][0][1])
     pic1 = mirror_horizontal(pic1)
     copyToTarget(pic1, canvas, grid[0][3][0], grid[0][3][1])
@@ -67,7 +67,7 @@ def makeCollage():
     
     #paint photo 3
     pic3 = makePicture('C:\\Users\\J.McGhee\\Documents\\Jake\\CST205\\lab5\\national-animal-of-brazil.jpg')
-    pic3 = copyPictureToFitGrid(pic3, canvas, rows, cols, 400, 100)
+    pic3 = copyPictureToFitGrid(pic3, canvas, rows, cols, 300, 100)
     pic3 = mirror_vertical(pic3)
     copyToTarget(pic3, canvas, grid[3][2][0], grid[3][2][1])
     pic3 = mirror_horizontal(pic3)
@@ -75,28 +75,45 @@ def makeCollage():
     print("photo 3 successful")
     
     #paint photo 4
-    pic4 = makePicture('C:\\Users\\J.McGhee\\Documents\\Jake\\CST205\\lab5\\Panthera_onca_at_the_Toronto_Zoo_2.jpg')
-    pic4 = copyPictureToFitGrid(pic4, canvas, rows, cols, 0, 0)
-    copyToTarget(pic4, canvas, grid[1][3][0], grid[1][3][1])
-    pic4 = mirror_horizontal(pic4)
-    copyToTarget(pic4, canvas, grid[1][0][0], grid[1][0][1])
+    pic4 = makePicture('C:\\Users\\J.McGhee\\Documents\\Jake\\CST205\\lab5\\large-header-jaguar-Patrick-Meier-Jag-Water-Fullsize2.jpg')
+    pic4 = copyPictureToFitGrid(pic4, canvas, rows, cols, 100, 200)
+    pic4 = makeNegative(pic4)
+    copyToTarget(pic4, canvas, grid[2][0][0], grid[2][0][1])
     print("photo 4 successful")
     
     #paint photo 5
-    pic5 = makePicture('C:\\Users\\J.McGhee\\Documents\\Jake\\CST205\\lab5\\jaguar-06.jpg')
-    pic5 = copyPictureToFitGrid(pic5, canvas, rows, cols, 0, 500)
-    pic5 = mirror_vertical(pic5)
-    copyToTarget(pic5, canvas, grid[2][0][0], grid[2][0][1])
+    pic5 = makePicture('C:\\Users\\J.McGhee\\Documents\\Jake\\CST205\\lab5\\jaguar-wide-30858048.jpg')
+    pic5 = copyPictureToFitGrid(pic5, canvas, rows, cols, 100, 100)
+    copyToTarget(pic5, canvas, grid[1][0][0], grid[1][0][1])
     pic5 = mirror_horizontal(pic5)
-    copyToTarget(pic5, canvas, grid[2][3][0], grid[2][3][1])
+    copyToTarget(pic5, canvas, grid[1][3][0], grid[1][3][1])
     print("photo 5 successful")
+    
+    #paint photo 6
+    pic6 = makePicture('C:\\Users\\J.McGhee\\Documents\\Jake\\CST205\\lab5\\Panthera_onca_at_the_Toronto_Zoo_2.jpg')
+    pic6 = copyPictureToFitGrid(pic6, canvas, rows, cols, 500, 0)
+    copyToTarget(pic6, canvas, grid[1][1][0], grid[1][1][1])
+    pic6 = mirror_horizontal(pic6)
+    copyToTarget(pic6, canvas, grid[1][2][0], grid[1][2][1])
+    pic6 = mirror_vertical(pic6)
+    copyToTarget(pic6, canvas, grid[2][2][0], grid[2][2][1])
+    pic6 = mirror_horizontal(pic6)
+    copyToTarget(pic6, canvas, grid[2][1][0], grid[2][1][1])
+    print("photo 6 successful")
+    
+    #paint photo 7
+    pic7 = makePicture('C:\\Users\\J.McGhee\\Documents\\Jake\\CST205\\lab5\\jaguar-walking-branch.ngsversion.1461176495163.jpg')
+    pic7 = copyPictureToFitGrid(pic7, canvas, rows, cols, 350, 0)
+    pic7 = makeNegative(pic7)    
+    pic7 = mirror_horizontal(pic7)
+    copyToTarget(pic7, canvas, grid[2][3][0], grid[2][3][1])
+    print("photo 7 successful")
     
     #paint center photo
     pic8 = makePicture('C:\\Users\\J.McGhee\\Documents\\Jake\\CST205\\lab5\\jaguar.jpg')
-    #pic8 = copyPictureToFitGrid(pic8, canvas, rows, cols, 0, 0)
     pic8 = quadMirror_topLeft(pic8)
     copyToTarget(pic8, canvas, getWidth(canvas)/2 - getWidth(pic8)/2, getHeight(canvas)/2 - getHeight(pic8)/2)
-    
+    print("photo 8 successful")
    
     
     
@@ -230,4 +247,19 @@ def makeNegative(pic):
         setGreen(p, g)
         setBlue(p, b)
     return(pic)
+
+def BnW(pic):
+    """ Converts an image to gray-scale """
+    
+    pixels = getPixels(pic)
+    for p in pixels:
+        r = getRed(p)
+        g = getGreen(p)
+        b = getBlue(p)
+        luminance = r*0.299 + g*0.587 + b*0.114
+        setRed(p, luminance)
+        setGreen(p, luminance)
+        setBlue(p, luminance)
+    return pic
+    
     
